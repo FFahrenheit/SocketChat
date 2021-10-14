@@ -11,9 +11,12 @@ let server = app.listen(port, () => {
 app.use(express.static('public'));
 
 let io = socket(server);
+let connected = 0;
 
 io.on('connection', (socket) => {
     console.log('New connection: ' + socket.id);
+    connected += 1;
+    io.sockets.emit('connections', connected);
 
     //Chat event
     socket.on('chat', data => {
@@ -22,6 +25,12 @@ io.on('connection', (socket) => {
 
     socket.on('typing', data => {
         socket.broadcast.emit('typing', data);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Disconnected :(');
+        connected -= 1;
+        io.sockets.emit('connections', connected);
     });
 
 });
