@@ -1,5 +1,6 @@
 const express = require('express');
 const socket = require('socket.io');
+
 const port = process.env.PORT || 4000;
 
 let app = express();
@@ -31,6 +32,10 @@ io.on('connection', (socket) => {
         console.log('Disconnected :(');
         connected -= 1;
         io.sockets.emit('connections', connected);
+    });
+
+    socket.on('sendImage', async(data) => {
+        io.sockets.emit('image', data);
     });
 
 });
