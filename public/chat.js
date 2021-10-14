@@ -6,17 +6,21 @@ console.log('Connected to ' + url);
 let message = document.getElementById('message'),
     handle = document.getElementById('handle'),
     btn = document.getElementById('send'),
-    output = document.getElementById('output');
-    feedback = document.getElementById('feedback');
-    chat = document.getElementById('chat-window');
+    output = document.getElementById('output'),
+    feedback = document.getElementById('feedback'),
+    chat = document.getElementById('chat-window'),
     connected = document.getElementById('connected');
 
 let audio = new Audio('assets/chat.mp3');
 
 handle.value = sessionStorage.getItem('handle') || localStorage.getItem('handle') || '';
 
-message.addEventListener('keypress', () => {
-    socket.emit('typing', handle.value);
+message.addEventListener('keypress', (e) => {
+    if (e.key == 'Enter') {
+        handleMessage();
+    } else {
+        socket.emit('typing', handle.value);
+    }
 });
 
 let handleMessage = () => {
@@ -35,12 +39,6 @@ let handleMessage = () => {
 // Emit events
 btn.addEventListener('click', handleMessage);
 
-message.addEventListener('keypress', (e) => {
-    if (e.key == 'Enter') {
-        handleMessage();
-    }
-})
-
 // Listen for events
 socket.on('chat', data => {
     feedback.innerHTML = '';
@@ -57,5 +55,5 @@ socket.on('typing', data => {
 });
 
 socket.on('connections', data => {
-    connected.innerHTML = `&#9679; ${data} ${data == 1 ? 'user' : 'users' } connected`;
+    connected.innerHTML = `&#9679; ${data} ${data == 1 ? 'user' : 'users'} connected`;
 });
