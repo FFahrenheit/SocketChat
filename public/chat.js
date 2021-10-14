@@ -24,29 +24,34 @@ message.addEventListener('keypress', (e) => {
     }
 });
 
-file.addEventListener('change', function () {
-
-    if (handle.value.length > 0) {
-        console.log(this.files[0]);
-        const reader = new FileReader();
-        reader.readAsDataURL(this.files[0]);
-
-        reader.onload = function () {
-            const data = {
-                img: reader.result,
-                handle: handle.value
-            }
-            file.value = '';
-            socket.emit('sendImage', data);
-        };
-
-        reader.onerror = function (error) {
-            console.log('Error: ', error);
-            file.value = '';
-        };
-    }else{
-        console.log('umh');
+file.addEventListener('click', (e) => {
+    if (handle.value.length <= 0) {
+        e.preventDefault();
     }
+})
+
+file.addEventListener('change', function () {
+    const reader = new FileReader();
+    reader.readAsDataURL(this.files[0]);
+
+    reader.onload = function () {
+        console.log(reader.result);
+        const data = {
+            img: reader.result,
+            handle: handle.value
+        }
+        file.value = '';
+        sessionStorage.setItem('handle', handle.value);
+        localStorage.setItem('handle', handle.value);
+        message.focus();
+        socket.emit('sendImage', data);
+    };
+
+    reader.onerror = function (error) {
+        console.log('Error: ', error);
+        file.value = '';
+    };
+
 }, false);
 
 let handleMessage = () => {
