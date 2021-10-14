@@ -1,6 +1,5 @@
-body{
-    font-family: 'Source Code Pro', monospace;
-}
+body, html{
+    font-family: 'Source Code Pro', monospace;}
 
 h2{
     font-size: 18px;
@@ -54,12 +53,21 @@ input{
     width: 100%;
     background: #fff;
     border-bottom: 1px solid #eee;
-    font-family: Nunito;
     font-size: 16px;
 }
 
 button{
     background: #575ed8;
+    color: #fff;
+    font-size: 18px;
+    border: 0;
+    padding: 12px 0;
+    width: 100%;
+    border-radius: 0 0 2px 2px;
+}
+
+button:hover{
+    background: #0f146d;
     color: #fff;
     font-size: 18px;
     border: 0;
