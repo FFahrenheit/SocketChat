@@ -1,2 +1,4 @@
-const port =  4000;
-let socket = io.connect('http://localhost' + port); //Conectarse
+let url = window.location.href;
+let socket = io.connect(url); //Conectarse
+
+console.log('Connected to ' + url);
