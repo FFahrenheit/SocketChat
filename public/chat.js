@@ -7,16 +7,18 @@ let message = document.getElementById('message'),
     handle = document.getElementById('handle'),
     btn = document.getElementById('send'),
     output = document.getElementById('output');
-    feedback = document.getElementById('feedback');
+feedback = document.getElementById('feedback');
+chat = document.getElementById('chat-window');
+
+let audio = new Audio('assets/chat.mp3');
 
 handle.value = sessionStorage.getItem('handle') || '';
 
-message.addEventListener('keypress', () =>{
+message.addEventListener('keypress', () => {
     socket.emit('typing', handle.value);
 })
 
-// Emit events
-btn.addEventListener('click', () => {
+let handleMessage = () => {
     if (message.value.length > 0 && handle.value.length > 0) {
         socket.emit('chat', {
             message: message.value,
@@ -24,15 +26,30 @@ btn.addEventListener('click', () => {
         });
         message.value = '';
         sessionStorage.setItem('handle', handle.value);
+        message.focus();
     }
-});
+}
+
+// Emit events
+btn.addEventListener('click', handleMessage);
+
+message.addEventListener('keypress', (e) => {
+    if (e.key == 'Enter') {
+        handleMessage();
+    }
+})
 
 // Listen for events
 socket.on('chat', data => {
     feedback.innerHTML = '';
     output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
+    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+    if (data.handle != handle.value) {
+        audio.play();
+    }
 });
 
-socket.on('typing', data =>{
+socket.on('typing', data => {
     feedback.innerHTML = '<p><em>' + data + ' is typing a message...</em></p>';
+    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
 });
